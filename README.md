@@ -1,4 +1,4 @@
-# 🌊 Monitor de Cheia com Arduino
+# 🌊 Monitor de enchentes com Arduino
 
 Este projeto tem como objetivo criar um **sistema de monitoramento e alerta para enchentes**, utilizando sensores para medir o nível da água e condições ambientais (temperatura e umidade). Um display LCD exibe as informações em tempo real, e LEDs/buzzer alertam sobre possíveis riscos.
 
