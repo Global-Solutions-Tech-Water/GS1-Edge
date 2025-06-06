@@ -1,0 +1,111 @@
+#include <LiquidCrystal.h>        // Biblioteca para controlar o display LCD
+#include "DHT.h"                  // Biblioteca para ler o sensor DHT (temperatura e umidade)
+
+#define DHTPIN A0                 // Define o pino A0 como entrada do sensor DHT
+#define DHTTYPE DHT22             // Define o tipo de sensor DHT como DHT22
+
+LiquidCrystal lcd(2,3,4,5,6,7);   // Inicializa o LCD nos pinos digitais 2 a 7
+DHT dht(DHTPIN, DHTTYPE);        // Cria um objeto do sensor DHT
+
+const int in = 8;                // Define o pino 8 como entrada (ECHO do sensor ultrassônico)
+const int out = 9;               // Define o pino 9 como saída (TRIG do sensor ultrassônico)
+
+const int verde = 10;            // LED verde no pino 10
+const int laranja = 11;          // LED laranja no pino 11
+const int vermelho = 12;         // LED vermelho no pino 12
+const int buzzer = 13;           // Buzzer no pino 13
+
+void setup() {
+  Serial.begin(9600);            // Inicia a comunicação serial a 9600 bps
+  lcd.begin(16, 2);              // Inicia o LCD com 16 colunas e 2 linhas
+
+  pinMode(in, INPUT);            // Define o pino ECHO como entrada
+  pinMode(out, OUTPUT);          // Define o pino TRIG como saída
+  pinMode(verde, OUTPUT);        // Define o LED verde como saída
+  pinMode(laranja, OUTPUT);      // Define o LED laranja como saída
+  pinMode(vermelho, OUTPUT);     // Define o LED vermelho como saída
+  pinMode(buzzer, OUTPUT);       // Define o buzzer como saída
+
+  dht.begin();                   // Inicializa o sensor DHT
+
+  // Garante que tudo comece desligado
+  digitalWrite(verde, LOW);
+  digitalWrite(laranja, LOW);
+  digitalWrite(vermelho, LOW);
+  digitalWrite(buzzer, LOW);
+
+  // Mostra mensagem inicial no LCD
+  lcd.setCursor(0, 0);
+  lcd.print("Monitor de Cheia");
+  lcd.setCursor(0, 1);
+  lcd.print("Sistema de Alerta");
+  delay(3000);                   // Espera 3 segundos
+  lcd.clear();                   // Limpa o LCD
+}
+
+void loop() {
+  // Leitura de temperatura e umidade
+  float T = dht.readTemperature();   // Lê a temperatura em Celsius
+  float H = dht.readHumidity();      // Lê a umidade relativa
+
+  if (isnan(H) || isnan(T)) {        // Verifica se a leitura falhou
+    lcd.clear();
+    lcd.print("ERRO NO SENSOR");     // Mostra erro no LCD
+    return;                          // Sai do loop
+  }
+
+  // Leitura do sensor ultrassônico
+  long duracao;                      // Tempo que leva para o som voltar
+  float distancia;                   // Distância calculada em cm
+
+  digitalWrite(out, LOW);           
+  delayMicroseconds(2);             // Pulso de estabilização
+  digitalWrite(out, HIGH);          
+  delayMicroseconds(10);            // Envia um pulso de 10 microssegundos
+  digitalWrite(out, LOW);           
+
+  duracao = pulseIn(in, HIGH);      // Mede o tempo até o pulso voltar
+  distancia = (duracao * 0.034) / 2; // Converte tempo em distância (em cm)
+
+  // Mostra os dados no Monitor Serial
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.print("cm  Temp: ");
+  Serial.print(T);
+  Serial.print("C  Umid: ");
+  Serial.println(H);
+
+  // Mostra os dados no LCD
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Nivel: ");
+  lcd.print(distancia);
+  lcd.print("cm");
+
+  lcd.setCursor(0, 1);
+
+  // Define alerta com base na distância medida
+  if (distancia <= 50) {                     // Muito próximo da água (risco alto)
+    lcd.print("ALERTA VERMELHO!");
+    digitalWrite(vermelho, HIGH);           // Liga LED vermelho
+    digitalWrite(laranja, LOW);             // Desliga outros LEDs
+    digitalWrite(verde, LOW);
+    digitalWrite(buzzer, HIGH);             // Ativa o buzzer
+  } 
+  else if (distancia <= 190) {              // Meio termo (risco moderado)
+    lcd.print("ALERTA LARANJA!");
+    digitalWrite(laranja, HIGH);            // Liga LED laranja
+    digitalWrite(vermelho, LOW);
+    digitalWrite(verde, LOW);
+    digitalWrite(buzzer, LOW);              // Buzzer desligado
+  } 
+  else {                                    // Água distante (sem risco)
+    lcd.print("ALERTA VERDE!");
+    digitalWrite(verde, HIGH);              // Liga LED verde
+    digitalWrite(laranja, LOW);
+    digitalWrite(vermelho, LOW);
+    digitalWrite(buzzer, LOW);              // Buzzer desligado
+  }
+
+  delay(1000);                              // Espera 1 segundo antes de repetir
+}
