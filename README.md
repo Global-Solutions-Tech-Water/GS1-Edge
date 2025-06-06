@@ -1,4 +1,5 @@
 # 🌊 Tech Water: Monitor de Enchentes com Arduino
+Vitor Bordalo RM: 561592     Lucas Flekner RM: 562262
 
 Um sistema inteligente de **monitoramento e alerta de enchentes** com base em sensores ambientais. O projeto coleta dados de nível de água, temperatura e umidade, exibindo as informações em tempo real por LCD, LEDs e sons de alerta.
 
