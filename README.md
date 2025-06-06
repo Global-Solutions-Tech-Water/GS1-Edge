@@ -1,50 +1,53 @@
-# 🌊 Monitor de enchentes com Arduino
+# 🌊 Tech Water: Monitor de Enchentes com Arduino
 
-Este projeto tem como objetivo criar um **sistema de monitoramento e alerta para enchentes**, utilizando sensores para medir o nível da água e condições ambientais (temperatura e umidade). Um display LCD exibe as informações em tempo real, e LEDs/buzzer alertam sobre possíveis riscos.
+Um sistema inteligente de **monitoramento e alerta de enchentes** com base em sensores ambientais. O projeto coleta dados de nível de água, temperatura e umidade, exibindo as informações em tempo real por LCD, LEDs e sons de alerta.
+
+---
 
 ## 🔧 Componentes Utilizados
 
-- 1x Arduino UNO
-- 1x Sensor Ultrassônico (HC-SR04)
-- 1x Sensor de Temperatura e Umidade (DHT22)
-- 1x Display LCD 16x2 (com interface paralela)
-- 1x Buzzer
-- 3x LEDs (Verde, Laranja, Vermelho)
-- 3x Resistores (220Ω para os LEDs)
-- Jumpers e Protoboard
+- Arduino UNO  
+- Sensor Ultrassônico HC-SR04  
+- Sensor de Temperatura e Umidade DHT22  
+- Display LCD 16x2 (interface paralela)  
+- Buzzer  
+- LEDs: Verde, Laranja e Vermelho  
+- Resistores de 220Ω para cada LED  
+- Protoboard e Jumpers  
 
-## 🧠 Funcionamento
+---
 
-O sistema realiza leituras contínuas da distância até a superfície da água usando o **sensor ultrassônico**. Baseado nessa distância, ele classifica o risco de alagamento em 3 níveis:
+## 🧠 Funcionamento do Sistema
 
-- ✅ **Verde (Segurança):** Nível de água está baixo (> 190 cm)
-- ⚠️ **Laranja (Atenção):** Nível de água moderado (entre 50 e 190 cm)
-- 🚨 **Vermelho (Perigo):** Nível crítico de água (≤ 50 cm)
+O sensor ultrassônico mede a distância entre o sensor e a superfície da água. Essa distância define o risco de enchente:
 
-Além disso, o **sensor DHT22** mede a temperatura e umidade do ambiente, exibindo os dados no **Monitor Serial**.
+- ✅ **Verde (Segurança):** > 190 cm  
+- ⚠️ **Laranja (Atenção):** entre 50 cm e 190 cm  
+- 🚨 **Vermelho (Perigo):** ≤ 50 cm  
 
-## 💻 Exibição
+Simultaneamente, o DHT22 registra temperatura e umidade. Os dados são exibidos:
 
-- **LCD 16x2:** Mostra o nível de água e alerta correspondente
-- **Serial Monitor:** Exibe temperatura, umidade e nível da água
-- **LEDs:** Representam visualmente os níveis de alerta
-- **Buzzer:** Emite som quando o nível está em alerta vermelho
+- No **LCD 16x2** com alerta de nível da água  
+- No **Monitor Serial** com condições ambientais  
+- Por **LEDs** coloridos conforme o risco  
+- Com **buzzer** em caso de alerta vermelho  
 
-## 📂 Código
+---
 
-O código está dividido em duas partes principais:
-- `setup()`: Inicializa sensores, pinos e LCD
-- `loop()`: Realiza leituras, calcula distância, exibe dados e ativa os alertas
+## 💻 Arquitetura do Código
 
-### ⚙️ Bibliotecas Necessárias
+- `setup()`: inicializa sensores, LCD e pinos  
+- `loop()`: realiza as leituras e ativa respostas visuais/sonoras  
 
-Antes de fazer upload para o Arduino, certifique-se de instalar as bibliotecas:
-- `LiquidCrystal` (nativa do Arduino IDE)
-- `DHT sensor library` by Adafruit
+### Bibliotecas Necessárias
 
-Instale via **Gerenciador de Bibliotecas** no Arduino IDE.
+- `LiquidCrystal`  
+- `DHT sensor library` da Adafruit  
+> Instale via **Gerenciador de Bibliotecas** no Arduino IDE.
 
-## 🛠️ Esquemático (Resumo de Conexões)
+---
+
+## 🔌 Esquemático de Ligação
 
 | Componente       | Pino Arduino |
 |------------------|--------------|
@@ -53,34 +56,45 @@ Instale via **Gerenciador de Bibliotecas** no Arduino IDE.
 | DHT22 Data       | A0           |
 | LCD RS           | 2            |
 | LCD E            | 3            |
-| LCD D4-D7        | 4, 5, 6, 7    |
+| LCD D4-D7        | 4, 5, 6, 7   |
 | LED Verde        | 10           |
 | LED Laranja      | 11           |
 | LED Vermelho     | 12           |
 | Buzzer           | 13           |
 
-## 🧪 Como Usar
+---
 
-1. Monte o circuito conforme as conexões acima.
-2. Faça o upload do código para o Arduino.
-3. Abra o **Monitor Serial** para ver os dados.
-4. Observe o LCD e os LEDs para acompanhar o status de alagamento.
-5. Em caso de alerta vermelho, o buzzer será ativado.
+## 🧪 Como Simular no Wokwi
 
-## 📸 Imagens (opcional)
-
-> *(Aqui você pode incluir imagens do protótipo montado, esquema de ligação ou vídeo de demonstração)*
-
-## 📌 Possíveis Melhorias
-
-- Adicionar envio de dados via Wi-Fi (ESP8266 ou ESP32)
-- Registro de histórico em cartão SD
-- Monitoramento remoto por aplicativo ou dashboard web
-
-## 📄 Licença
-
-Este projeto é de código aberto e pode ser usado para fins educacionais ou pessoais.
+1. Acesse o projeto no link: https://wokwi.com/projects/432848568294051841  
+2. Clique em **"Start Simulation"**  
+3. Veja o LCD exibir o nível da água e o alerta  
+4. Observe os LEDs mudarem conforme a distância  
+5. Use o controle deslizante do sensor para testar diferentes alturas  
+6. Acompanhe a saída no **Serial Monitor** da Wokwi  
 
 ---
 
-Desenvolvido com 💡 por [Seu Nome]
+## 📸 Links 
+
+- Projeto no Wokwi: https://wokwi.com/projects/432848568294051841  
+- Vídeo demonstrativo: https://www.youtube.com/watch?v=4SIWR4YfxLg  
+
+---
+
+## 📌 Melhorias Futuras
+
+- Envio de dados para nuvem via ESP32  
+- Registro de histórico em SD Card  
+- App móvel para monitoramento remoto  
+- Integração com API meteorológica para análise preditiva  
+
+---
+
+## 📄 Licença
+
+Projeto de código aberto para fins educacionais e pessoais.
+
+---
+
+Desenvolvido com ❤️ por **Vitor Bordalo**
